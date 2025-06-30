@@ -1,19 +1,29 @@
 import { writeFileSync } from "node:fs";
 import { AzureOpenAI } from "openai/index.mjs";
+import {
+    DefaultAzureCredential,
+    getBearerTokenProvider,
+  } from "@azure/identity";
 
 // Set environment variables or edit the corresponding values here.
 const endpoint: string = process.env.AZURE_OPENAI_ENDPOINT || "AZURE_OPENAI_ENDPOINT";
-console.log(endpoint)
-const apiKey: string = process.env.AZURE_OPENAI_API_KEY || "AZURE_OPENAI_API_KEY";
-const apiVersion: string = "2025-01-01-preview"; 
-const deployment: string = "gpt-4o-mini-audio-preview"; 
+const deployment: string = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o-mini-audio-preview"; 
+const apiVersion: string = process.env.OPENAI_API_VERSION || "2025-01-01-preview"; 
 
-const client = new AzureOpenAI({ 
-  endpoint, 
-  apiKey, 
-  apiVersion, 
-  deployment 
-});  
+// Keyless authentication 
+const getClient = (): AzureOpenAI => {
+    const credential = new DefaultAzureCredential();
+    const scope = "https://cognitiveservices.azure.com/.default";
+    const azureADTokenProvider = getBearerTokenProvider(credential, scope);
+    const client = new AzureOpenAI({
+      endpoint: endpoint,
+      apiVersion: apiVersion,
+      azureADTokenProvider,
+    });
+    return client;
+};
+
+const client = getClient();
 
 async function main(): Promise<void> {
 

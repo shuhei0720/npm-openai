@@ -1,17 +1,23 @@
 import { writeFileSync } from "node:fs";
 import { AzureOpenAI } from "openai/index.mjs";
+import { DefaultAzureCredential, getBearerTokenProvider, } from "@azure/identity";
 // Set environment variables or edit the corresponding values here.
 const endpoint = process.env.AZURE_OPENAI_ENDPOINT || "AZURE_OPENAI_ENDPOINT";
-console.log(endpoint);
-const apiKey = process.env.AZURE_OPENAI_API_KEY || "AZURE_OPENAI_API_KEY";
-const apiVersion = "2025-01-01-preview";
-const deployment = "gpt-4o-mini-audio-preview";
-const client = new AzureOpenAI({
-    endpoint,
-    apiKey,
-    apiVersion,
-    deployment
-});
+const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o-mini-audio-preview";
+const apiVersion = process.env.OPENAI_API_VERSION || "2025-01-01-preview";
+// Keyless authentication 
+const getClient = () => {
+    const credential = new DefaultAzureCredential();
+    const scope = "https://cognitiveservices.azure.com/.default";
+    const azureADTokenProvider = getBearerTokenProvider(credential, scope);
+    const client = new AzureOpenAI({
+        endpoint: endpoint,
+        apiVersion: apiVersion,
+        azureADTokenProvider,
+    });
+    return client;
+};
+const client = getClient();
 async function main() {
     // Make the audio chat completions request
     const response = await client.chat.completions.create({
