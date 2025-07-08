@@ -5,8 +5,14 @@ echo export OPENAI_API_VERSION="2025-01-01-preview" | sudo tee -a /etc/environme
 echo export AZURE_OPENAI_API_KEY="APIキー" | sudo tee -a /etc/environment
 
 echo export AZURE_OPENAI_ENDPOINT="https://shuhe-mctv38lb-eastus2.cognitiveservices.azure.com/" | sudo tee -a /etc/environment
-echo export AZURE_OPENAI_DEPLOYMENT_NAME="gpt-4o-mini-audio-preview" | sudo tee -a /etc/environment
-echo export OPENAI_API_VERSION="2025-01-01-preview" | sudo tee -a /etc/environment
+echo export AZURE_OPENAI_DEPLOYMENT_NAME="gpt-4o" | sudo tee -a /etc/environment
+echo export OPENAI_API_VERSION="2024-07-01-preview" | sudo tee -a /etc/environment
 
 echo export AZURE_OPENAI_API_KEY="1qnYmxfEcLT0zlTj2lD1hquh0NxP3L2xqBNkLqsRYORYx4ThlILwJQQJ99BGACHYHv6XJ3w3AAAAACOGbJcX" | sudo tee -a /etc/environment
 source /etc/environment
+
+unset AZURE_OPENAI_API_KEY
+
+npm install typescript --save-dev
+npm i --save-dev @types/node
+npx tsc
